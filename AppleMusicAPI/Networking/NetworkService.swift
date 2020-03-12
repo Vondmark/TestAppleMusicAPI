@@ -24,7 +24,7 @@ class NetworkService {
                     let track = try JSONDecoder().decode(SearchResponse.self, from: data)
                     completion(.success(track))
                 } catch  let jsonError {
-                    print("Failed to decode JSON", jsonError)
+                    print("Failed to decoded JSON", jsonError)
                     completion(.failure(jsonError))
                 }
             }
