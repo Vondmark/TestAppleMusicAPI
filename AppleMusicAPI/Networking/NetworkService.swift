@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 class NetworkService {
     
@@ -29,5 +30,28 @@ class NetworkService {
                 }
             }
         }.resume()
+    }
+    
+    func getImage(from string: String) -> UIImage? {
+        //2. Get valid URL
+        guard let url = URL(string: string)
+            else {
+                print("Unable to create URL")
+                return nil
+        }
+
+        var image: UIImage? = nil
+        do {
+            //3. Get valid data
+            let data = try Data(contentsOf: url, options: [])
+
+            //4. Make image
+            image = UIImage(data: data)
+        }
+        catch {
+            print(error.localizedDescription)
+        }
+
+        return image
     }
 }

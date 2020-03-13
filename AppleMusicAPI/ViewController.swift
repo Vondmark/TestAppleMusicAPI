@@ -39,6 +39,7 @@ class ViewController: UIViewController {
         musicTable.delegate = self
         musicTable.dataSource = self
         musicTable.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        
     }
     
 }
@@ -49,16 +50,24 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = musicTable.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        var cell = musicTable.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
         let track = searchResponse?.results[indexPath.row]
+        if let image = networkService.getImage(from: (track?.artworkUrl60)! ) {
+            cell.imageView?.image = image
+        }
         cell.textLabel?.text = track?.trackName
+        cell.textLabel?.adjustsFontSizeToFitWidth = true
+        cell.detailTextLabel?.text = track?.artistName
+        
+        
         return cell
     }
 }
 
 extension ViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        let urlString = "https://itunes.apple.com/search?term=\(searchText)&limit=25"
+        let urlString = "https://itunes.apple.com/search?term=\(searchText)&limit=40"
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { (_) in
             self.networkService.request(urlString: urlString) { [weak self] (result) in
